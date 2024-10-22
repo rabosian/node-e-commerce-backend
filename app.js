@@ -10,7 +10,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use("/api", router)
 
-const mongoURI = process.env.DB_URI_LOCAL;
+const mongoURI = process.env.DB_URI;
 
 mongoose
   .connect(mongoURI)
