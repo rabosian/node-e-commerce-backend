@@ -41,7 +41,7 @@ userSchema.methods.generateAccessToken = function () {
   });
   return token;
 };
-userSchema.methods.generateRefresh = function () {
+userSchema.methods.generateRefreshToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "2d",
   });

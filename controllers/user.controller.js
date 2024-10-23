@@ -29,7 +29,7 @@ userController.login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const existingUser = await User.findOne({ email });
-    if (findUser) {
+    if (existingUser) {
       if (bcrypt.compareSync(password, existingUser.password)) {
         const accessToken = existingUser.generateAccessToken();
         const refreshToken = existingUser.generateRefreshToken();
