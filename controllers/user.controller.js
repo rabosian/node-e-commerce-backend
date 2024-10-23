@@ -28,17 +28,31 @@ userController.signup = async (req, res) => {
 userController.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      if (bcrypt.compareSync(password, existingUser.password)) {
-        const accessToken = existingUser.generateAccessToken();
-        const refreshToken = existingUser.generateRefreshToken();
-        res.status(200).json({ status: "Success", existingUser, accessToken, refreshToken });
+    const user = await User.findOne({ email });
+    if (user) {
+      if (bcrypt.compareSync(password, user.password)) {
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+        res
+          .status(200)
+          .json({ status: "Success", user, accessToken, refreshToken });
+        return
       }
     }
     throw new Error("Email and password NOT match");
   } catch (err) {
     res.status(400).json({ status: "Failed", message: err.message });
+  }
+};
+
+userController.findUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user)
+      res.status(404).json({ status: "Failed", error: "User NOT found" });
+    res.status(200).json({ status: "Success", user });
+  } catch (err) {
+    res.status(400).json({ status: "Failed", error: err.message });
   }
 };
 
