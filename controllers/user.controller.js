@@ -13,7 +13,7 @@ userController.signup = async (req, res) => {
     }
 
     if (!password || password.trim() === "") {
-      throw new Error("password cannot be empty")
+      throw new Error("password cannot be empty");
     }
 
     const hash = await bcrypt.hash(password, saltRounds);
@@ -22,6 +22,23 @@ userController.signup = async (req, res) => {
     res.status(201).json({ status: "success" });
   } catch (err) {
     res.status(400).json({ status: "failed", error: err.message });
+  }
+};
+
+userController.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const existingUser = await User.findOne({ email });
+    if (findUser) {
+      if (bcrypt.compareSync(password, existingUser.password)) {
+        const accessToken = existingUser.generateAccessToken();
+        const refreshToken = existingUser.generateRefreshToken();
+        res.status(200).json({ status: "Success", existingUser, accessToken, refreshToken });
+      }
+    }
+    throw new Error("Email and password NOT match");
+  } catch (err) {
+    res.status(400).json({ status: "Failed", message: err.message });
   }
 };
 
